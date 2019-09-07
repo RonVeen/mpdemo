@@ -22,9 +22,13 @@ public class MongoVehiclePersistence implements VehiclePersistence {
     private Morphia morphia;
     private Datastore datastore;
 
-    private String host = "localhost";
+    @Inject
+    @ConfigProperty(name = "mongo.host")
+    private String host;
 
-    private Integer port = 27017;
+    @Inject
+    @ConfigProperty(name="mongo.port", defaultValue = "27017")
+    private Integer port;
 
     @PostConstruct
     public void setup() {
