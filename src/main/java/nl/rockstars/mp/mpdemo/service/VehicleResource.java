@@ -1,6 +1,9 @@
 package nl.rockstars.mp.mpdemo.service;
 
+import nl.rockstars.mp.mpdemo.TechnicalException;
 import nl.rockstars.mp.mpdemo.model.Vehicle;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -25,6 +28,21 @@ public class VehicleResource {
 
     @Inject
     private VehicleMapper mapper;
+
+
+    @GET
+    @CircuitBreaker(failOn = TechnicalException.class)
+    @Fallback(fallbackMethod = "fallbackWhenInTrouble")
+    @Path("/trouble")
+    public Response inTrouble() {
+        throw new TechnicalException();
+    }
+
+
+    public Response fallbackWhenInTrouble() {
+        return Response.ok("Gered door de fallback").build();
+    }
+
 
     @GET
     public Response getVehicles() {
