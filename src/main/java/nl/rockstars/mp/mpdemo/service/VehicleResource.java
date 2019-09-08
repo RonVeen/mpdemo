@@ -3,10 +3,7 @@ package nl.rockstars.mp.mpdemo.service;
 import nl.rockstars.mp.mpdemo.TechnicalException;
 import nl.rockstars.mp.mpdemo.model.Vehicle;
 import org.eclipse.microprofile.faulttolerance.*;
-import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.bind.JsonbBuilder;
