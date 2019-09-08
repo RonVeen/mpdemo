@@ -3,6 +3,7 @@
 
     <featureManager>
         <feature>microProfile-2.0</feature>
+        <feature>mpMetrics-1.0</feature>
     </featureManager>
 
     <httpEndpoint id="defaultHttpEndpoint"
@@ -19,5 +20,20 @@
 
     <!-- The MP JWT configuration that injects the caller's JWT into a ResourceScoped bean for inspection. -->
     <mpJwt id="jwtUserConsumer" keyName="theKeyId" audiences="targetService" issuer="${jwt.issuer}"/>
+    <mpMetrics authentication="false"/>
+
+    <basicRegistry id="basic" realm="WebRealm">
+        <user name="admin" password="admin" />
+
+        <group name="AuthorizedGroup">
+            <member name="admin" />
+        </group>
+    </basicRegistry>
+
+    <administrator-role>
+        <user>admin</user>
+        <group>AuthorizedGroup</group>
+    </administrator-role>
+
 
 </server>

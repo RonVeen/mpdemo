@@ -3,6 +3,7 @@ package nl.rockstars.mp.mpdemo.service;
 
 
 import nl.rockstars.mp.mpdemo.model.Vehicle;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,6 +33,11 @@ public class VehicleService {
     }
 
 
+    @Counted(monotonic = true,
+            absolute = true,
+            name="VehicleDeletesCounts",
+            description = "Number of deleted vehicles",
+            displayName = "Deleted vehicle count")
     public Long delete(String uuid) {
         var deleteCount = persistence.delete(uuid);
         return deleteCount;

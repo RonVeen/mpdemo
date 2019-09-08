@@ -3,6 +3,11 @@ package nl.rockstars.mp.mpdemo.service;
 import nl.rockstars.mp.mpdemo.TechnicalException;
 import nl.rockstars.mp.mpdemo.model.Vehicle;
 import org.eclipse.microprofile.faulttolerance.*;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
+import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -53,6 +58,10 @@ public class VehicleResource {
     }
 
 
+    @Metered(name="getVehiclesInvocationCountPerMinute",
+            absolute = true,
+            unit = "per_minute",
+            description = "Full retrievals per minute")
     @GET
     public Response getVehicles() {
         var vehicleList = vehicleService.findAll();
@@ -72,7 +81,9 @@ public class VehicleResource {
     }
 
 
-
+    @Timed(name="addVehicleDurationInMillis",
+            absolute = true,
+            description = "Duration of addVehicle")
     @POST
     public Response addVehicle(String jsonBody) {
         var createdVehicle = upsertVehicle(jsonBody);
@@ -103,6 +114,7 @@ public class VehicleResource {
     private Vehicle upsertVehicle(String jsonBody) {
         return upsertVehicle(null, jsonBody);
     }
+
 
 
     private Vehicle upsertVehicle(String uuid, String jsonBody) {
