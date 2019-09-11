@@ -3,11 +3,14 @@ package nl.rockstars.mp.mpdemo.service;
 import nl.rockstars.mp.mpdemo.TechnicalException;
 import nl.rockstars.mp.mpdemo.model.Vehicle;
 import org.eclipse.microprofile.faulttolerance.*;
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -73,7 +76,30 @@ public class VehicleResource {
 
     @GET
     @Path("/{uuid}")
-    public Response getVehicle(@PathParam("uuid") String uuid) {
+    @APIResponses(
+            value = {
+                    @APIResponse(
+                            responseCode = "404",
+                            description = "Ontbrekende UUID"
+                    ),
+                    @APIResponse(
+                            responseCode = "200",
+                            description = "Succes"
+                    )
+            }
+    )
+    @Operation(
+            summary = "Ophalen van een bepaald voertuig",
+            description = "Ophalen van voertuig informatie aan de hand van een UUID van het voertuig"
+    )
+    public Response getVehicle(
+            @Parameter(
+                    description = "UUID van het voertuig",
+                    required = true,
+                    example = "1123-234-x345-445555",
+                    schema = @Schema(type = SchemaType.STRING)
+            )
+            @PathParam("uuid") String uuid) {
         var vehicle = vehicleService.findVehicleById(uuid);
 
         var json = JsonbBuilder.create().toJson(mapper.toDTO(vehicle));
